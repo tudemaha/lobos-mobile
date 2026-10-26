@@ -79,6 +79,9 @@ kotlin {
 
             // Navigation
             implementation(libs.navigation.compose)
+
+            // Icon
+            implementation(libs.material.icons.extended)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
