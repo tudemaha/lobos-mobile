@@ -7,11 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,6 +28,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import id.my.tudemaha.lobos.presentation.auth.ResendVerificationUiState
 import id.my.tudemaha.lobos.presentation.auth.ResendVerificationViewModel
+import id.my.tudemaha.lobos.ui.components.AuthHeader
+import id.my.tudemaha.lobos.ui.components.ErrorMessage
+import id.my.tudemaha.lobos.ui.components.LobosButton
 import id.my.tudemaha.lobos.ui.theme.LobosTheme
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -65,18 +65,9 @@ fun ResentVerificationContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "Lobos",
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                text = "Check your email",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                modifier = Modifier.padding(top = 4.dp, bottom = 28.dp)
+            AuthHeader(
+                title = "Verify your email",
+                subtitle = "Check your inbox to activate your account"
             )
 
             Card(
@@ -112,15 +103,7 @@ fun ResentVerificationContent(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    if (uiState.errorMessage != null) {
-                        Text(
-                            text = uiState.errorMessage,
-                            color = MaterialTheme.colorScheme.error,
-                            fontSize = 14.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        )
-                    }
+                    ErrorMessage(message = uiState.errorMessage)
                     if (uiState.infoMessage != null) {
                         Text(
                             text = uiState.infoMessage,
@@ -132,27 +115,16 @@ fun ResentVerificationContent(
                         )
                     }
 
-                    Button(
+                    LobosButton(
+                        text = "Resend Verification Email",
                         onClick = onResendVerificationClick,
-                        enabled = !uiState.isLoading,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp)
-                    ) {
-                        if (uiState.isLoading) {
-                            CircularProgressIndicator(
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        } else {
-                            Text("Resend Verification Email")
-                        }
-                    }
+                        isLoading = uiState.isLoading
+                    )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
                     TextButton(onClick = onLoginClick) {
-                        Text(text = "Back to Login")
+                        Text(text = "Back to Sign In")
                     }
                 }
             }
