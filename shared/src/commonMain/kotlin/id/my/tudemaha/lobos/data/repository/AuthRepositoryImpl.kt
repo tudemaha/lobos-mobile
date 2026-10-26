@@ -5,6 +5,7 @@ import id.my.tudemaha.lobos.data.remote.dto.ResendVerificationRequest
 import id.my.tudemaha.lobos.data.remote.dto.UserLoginRequest
 import id.my.tudemaha.lobos.data.remote.dto.UserRegisterRequest
 import id.my.tudemaha.lobos.domain.model.AuthToken
+import id.my.tudemaha.lobos.domain.model.EmailNotVerifiedException
 import id.my.tudemaha.lobos.domain.model.LoginData
 import id.my.tudemaha.lobos.domain.model.RegisterData
 import id.my.tudemaha.lobos.domain.repository.AuthRepository
@@ -28,7 +29,11 @@ class AuthRepositoryImpl(
                 )
                 tokenStore.saveTokens(token)
                 Result.success(token)
-            } else {
+            } else if (response.code == "EMAIL_NOT_VERIFIED") {
+                val errorMessage = response.errors?.firstOrNull() ?: "Email not verified"
+                Result.failure(EmailNotVerifiedException(errorMessage))
+            }
+            else {
                 val errorMessage = response.errors?.firstOrNull() ?: response.code ?: "Login failed"
                 Result.failure(Exception(errorMessage))
             }

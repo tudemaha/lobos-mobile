@@ -38,12 +38,20 @@ fun LoginScreen(
     viewModel: LoginViewModel = koinViewModel(),
     onNavigateToRegister: () -> Unit = {},
     onLoginSuccess: () -> Unit = {},
+    onNavigateToResendVerification: (email: String) -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
             onLoginSuccess()
+        }
+    }
+
+    LaunchedEffect(uiState.isEmailNotVerified) {
+        if (uiState.isEmailNotVerified) {
+            viewModel.onEmailNotVerifiedHandled()
+            onNavigateToResendVerification(uiState.email.trim())
         }
     }
 

@@ -2,6 +2,7 @@ package id.my.tudemaha.lobos.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import id.my.tudemaha.lobos.domain.model.EmailNotVerifiedException
 import id.my.tudemaha.lobos.domain.model.LoginData
 import id.my.tudemaha.lobos.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +22,10 @@ class LoginViewModel(
 
     fun onPasswordChange(password: String) {
        _uiState.update { it.copy(password = password, errorMessage = null) }
+    }
+
+    fun onEmailNotVerifiedHandled() {
+        _uiState.update { it.copy(isEmailNotVerified = false, password = "") }
     }
 
     fun login() {
@@ -45,11 +50,15 @@ class LoginViewModel(
                     _uiState.update { it.copy(isLoading = false, isSuccess = true) }
                 },
                 onFailure = { error ->
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMessage = error.message ?: "Authentication failed",
-                        )
+                    if (error is EmailNotVerifiedException) {
+                        _uiState.update { it.copy(isLoading = false, isEmailNotVerified = true) }
+                    } else {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                errorMessage = error.message ?: "Authentication failed",
+                            )
+                        }
                     }
                 }
             )

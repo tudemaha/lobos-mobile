@@ -9,7 +9,7 @@ data object LoginRoute
 data object RegisterRoute
 
 @Serializable
-data object VerifyEmailRoute
+data class ResendVerificationRoute(val email: String)
 
 @Serializable
 data object HomeRoute

@@ -9,8 +9,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import id.my.tudemaha.lobos.ui.screens.LoginScreen
 import id.my.tudemaha.lobos.ui.screens.RegisterScreen
+import id.my.tudemaha.lobos.ui.screens.ResendVerificationScreen
 
 @Composable
 fun LobosNavHost(
@@ -51,6 +53,11 @@ fun LobosNavHost(
                         launchSingleTop = true
                     }
                 },
+                onNavigateToResendVerification = { email ->
+                    navController.navigate(ResendVerificationRoute(email)) {
+                        launchSingleTop = true
+                    }
+                },
                 onLoginSuccess = {}
             )
         }
@@ -61,8 +68,18 @@ fun LobosNavHost(
                     navController.popBackStack()
                 },
                 onRegisterSuccess = { email ->
-
+                    navController.navigate(ResendVerificationRoute(email)) {
+                        popUpTo<RegisterRoute> { inclusive = true }
+                    }
                 }
+            )
+        }
+
+        composable<ResendVerificationRoute> { backStackEntry ->
+            val route = backStackEntry.toRoute<ResendVerificationRoute>()
+            ResendVerificationScreen(
+                email = route.email,
+                onNavigateToLogin = { navController.popBackStack(LoginRoute, false) },
             )
         }
     }
