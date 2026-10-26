@@ -19,7 +19,6 @@ class AuthRepositoryImpl(
             val request = UserLoginRequest(
                 data.email,
                 data.password,
-                rememberMe = true
             )
             val response = authApi.login(request)
             if (response.success && response.data != null) {
